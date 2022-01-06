@@ -5,14 +5,15 @@ const fs = require('fs');
 async function getAll(){
   let data = [],
       page = 1;
-  for(page = 1; page <= 11; ++page){
-    await request('https://yomaps.net/vi/VN/24-ha-noi/type/57-meal-takeaway??page='+page.toString()+'/', (error, response, html) => {
+  for(page = 1; page <= 10; ){
+    await request('https://yomaps.net/vi/VN/24-ha-noi/type/33-electronics-store?page='+page.toString(), (error, response, html) => {
         if(!error && response.statusCode == 200) {
             let $ = cheerio.load(html);
             // data = $('.block-grid-v2-info').find('.text-ellipsis a').attr('href');
             $('.block-grid-v2-info').each((index, el) => {
               data.push(el.children[1].children[0].attribs.href);
-            })
+            });
+            page++;
         }
         else {
         console.log(error);
@@ -48,11 +49,10 @@ function main(){
 
   data = getAll();
   getAll().then((res) => {
-    debugger
     res.forEach(item => {
       getDetail(item).then((res) => {
         result.push(res);
-        fs.writeFileSync('food-store.json', JSON.stringify(result)); // lưu dữ liệu vào file data.json
+        fs.writeFileSync('electric-store.json', JSON.stringify(result)); // lưu dữ liệu vào file data.json
       });
     })
   })
